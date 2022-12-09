@@ -12,108 +12,27 @@ import math
 model = SentenceTransformer('sentence-transformers/multi-qa-mpnet-base-dot-v1')
 
 
-def run_app():
-    st.title("EPUB Question Answering")
-    uploaded_file = st.file_uploader("Choose an EPUB file", type="epub")
+# Section 1: Upload epub or json file
+st.header('Upload epub or json file')
+file = st.file_uploader('Upload your file here')
 
-    # Get the path of the uploaded file
-    path = next(iter(uploaded))
+if file is not None:
+    # Check file type and process accordingly
+    ext = os.path.splitext(file)[1]
+    if ext == '.epub':
+        # Process epub file
+        pass
+    elif ext == '.json':
+        # Process json file
+        with open(file) as f:
+            data = json.load(f)
+        # Print first 10 entries from the file
+        st.write('Here is a preview of your json file:')
+        st.json(data[:10])
 
-    # Define the uploaded_file variable and assign it the value of the path variable
-    uploaded_file = path
-
-    # Check if a file was uploaded
-    if uploaded_file:
-        # Read the uploaded EPUB file
-        book = epub.read_epub(uploaded_file)
-
-    if uploaded_file is not None:
-        st.write("Uploaded file:", uploaded_file.name)
-        chapters = get_chapters(uploaded_file, False, 0, 0)
-        texts = [' '.join(chapter['paras']) for chapter in chapters]
-        embeddings = get_embeddings(texts)
-
-        question = st.text_input("Ask a question")
-        if question:
-            answer = search_for_answer(question, embeddings, texts)
-            st.text(answer)
-
-if __name__ == "__main__":
-    run_app()
-
-# Allow the user to upload a file
-uploaded = st.file_uploader("Upload your EPUB file:")
-
-# Get the path of the uploaded file
-path = next(iter(uploaded))
-
-
-def set_css():
-  display(HTML('''
-  
-    pre {
-        white-space: pre-wrap;
-    }
-  
-  '''))
-
-def part_to_chapter(part):
-    soup = BeautifulSoup(part.get_body_content(), 'html.parser')
-    paragraphs = [para.get_text().strip() for para in soup.find_all('p')]
-    paragraphs = [para for para in paragraphs if len(para) > 0]
-    if len(paragraphs) == 0:
-        return None
-    title = ' '.join([heading.get_text() for heading in soup.find_all('h1')])
-    return {'title': title, 'paras': paragraphs}
-
-min_words_per_para = 150
-max_words_per_para = 500
-
-def format_paras(chapters):
-    for i in range(len(chapters)):
-        for j in range(len(chapters[i]['paras'])):
-            split_para = chapters[i]['paras'][j].split()
-            if len(split_para) > max_words_per_para:
-                chapters[i]['paras'].insert(j + 1, ' '.join(split_para[max_words_per_para:]))
-                chapters[i]['paras'][j] = ' '.join(split_para[:max_words_per_para])
-            k = j
-            while len(chapters[i]['paras'][j].split()) < min_words_per_para and k < len(chapters[i]['paras']) - 1:
-                chapters[i]['paras'][j] += '\n' + chapters[i]['paras'][k + 1]
-                chapters[i]['paras'][k + 1] = ''
-                k += 1            
-
-        chapters[i]['paras'] = [para.strip() for para in chapters[i]['paras'] if len(para.strip()) > 0]
-        if len(chapters[i]['title']) == 0:
-            chapters[i]['title'] = '(Unnamed) Chapter {no}'.format(no=i + 1)
-
-def print_previews(chapters):
-    for (i, chapter) in enumerate(chapters):
-        title = chapter['title']
-        wc = len(' '.join(chapter['paras']).split(' '))
-        paras = len(chapter['paras'])
-        initial = chapter['paras'][0][:20]
-        preview = '{}: {} | wc: {} | paras: {}\n"{}..."\n'.format(i, title, wc, paras, initial)
-        print(preview)
-        
-def get_chapters(book_path, print_chapter_previews, first_chapter, last_chapter):
-    book = epub.read_epub(book_path)
-    parts = list(book.get_items_of_type(ebooklib.ITEM_DOCUMENT))
-    chapters = [part_to_chapter(part) for part in parts if part_to_chapter(part) is not None]
-    last_chapter = min(last_chapter, len(chapters) - 1)
-    chapters = chapters[first_chapter:last_chapter + 1]
-    format_paras(chapters)
-    if print_chapter_previews:
-        print_previews(chapters)
-    return chapters
-
-def get_embeddings(texts):
-    if type(texts) == str:
-        texts = [texts]
-    texts = [text.replace("\n", " ") for text in texts]
-    return model.encode(texts)
-
-def search_for_answer(question, embeddings, texts):
-    question_embedding = get_embeddings(question)[0]
-    distances = util.pytorch_cos_sim(question_embedding, embeddings)
-    closest = np.argmax(distances)
-    return texts[closest]
+# Section 2: Search form
+st.header('Search Form')
+search_term = st.text_input('Enter your search term')
+if st.button('Ask my book'):
+    # Search book based on the provided search term
+    pass
