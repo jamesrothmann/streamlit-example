@@ -11,6 +11,39 @@ import math
 
 model = SentenceTransformer('sentence-transformers/multi-qa-mpnet-base-dot-v1')
 
+
+def run_app():
+    st.title("EPUB Question Answering")
+    uploaded_file = st.file_uploader("Choose an EPUB file", type="epub")
+
+    if uploaded_file is not None:
+        st.write("Uploaded file:", uploaded_file.name)
+        chapters = get_chapters(uploaded_file, False, 0, 0)
+        texts = [' '.join(chapter['paras']) for chapter in chapters]
+        embeddings = get_embeddings(texts)
+
+        question = st.text_input("Ask a question")
+        if question:
+            answer = search_for_answer(question, embeddings, texts)
+            st.text(answer)
+
+if __name__ == "__main__":
+    run_app()
+
+# Allow the user to upload a file
+uploaded = st.file_uploader("Upload your EPUB file:")
+
+# Get the path of the uploaded file
+path = next(iter(uploaded))
+
+# Check if a file was uploaded
+if path:
+    # Read the uploaded EPUB file
+    with open(path, "rb") as file:
+        # Process the EPUB file
+        # ...
+
+
 def set_css():
   display(HTML('''
   
@@ -80,21 +113,3 @@ def search_for_answer(question, embeddings, texts):
     distances = util.pytorch_cos_sim(question_embedding, embeddings)
     closest = np.argmax(distances)
     return texts[closest]
-
-def run_app():
-    st.title("EPUB Question Answering")
-    uploaded_file = st.file_uploader("Choose an EPUB file", type="epub")
-
-    if uploaded_file is not None:
-        st.write("Uploaded file:", uploaded_file.name)
-        chapters = get_chapters(uploaded_file, False, 0, 0)
-        texts = [' '.join(chapter['paras']) for chapter in chapters]
-        embeddings = get_embeddings(texts)
-
-        question = st.text_input("Ask a question")
-        if question:
-            answer = search_for_answer(question, embeddings, texts)
-            st.text(answer)
-
-if __name__ == "__main__":
-    run_app()
