@@ -19,7 +19,6 @@ def set_css():
     }
   
   '''))
-get_ipython().events.register('pre_run_cell', set_css)
 
 def part_to_chapter(part):
     soup = BeautifulSoup(part.get_body_content(), 'html.parser')
