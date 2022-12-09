@@ -1,4 +1,4 @@
 altair
 pandas
 streamlit
-pip install sentence_transformers
+pip install ebooklib sentence_transformers
