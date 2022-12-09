@@ -3,6 +3,3 @@ pandas
 streamlit
 EbookLib
 sentence-transformers
-bs4
-os.path
-IPython.display
