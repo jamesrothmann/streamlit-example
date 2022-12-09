@@ -3,3 +3,4 @@ pandas
 streamlit
 EbookLib
 sentence-transformers
+beautifulsoup4
