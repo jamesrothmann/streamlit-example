@@ -36,13 +36,6 @@ uploaded = st.file_uploader("Upload your EPUB file:")
 # Get the path of the uploaded file
 path = next(iter(uploaded))
 
-# Check if a file was uploaded
-if path:
-    # Read the uploaded EPUB file
-    with open(path, "rb") as file:
-        # Process the EPUB file
-        # ...
-
 
 def set_css():
   display(HTML('''
