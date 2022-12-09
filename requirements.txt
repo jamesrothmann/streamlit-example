@@ -4,3 +4,4 @@ streamlit
 EbookLib
 sentence-transformers
 beautifulsoup4
+IPython
