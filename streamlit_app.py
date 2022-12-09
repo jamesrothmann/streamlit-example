@@ -16,6 +16,17 @@ def run_app():
     st.title("EPUB Question Answering")
     uploaded_file = st.file_uploader("Choose an EPUB file", type="epub")
 
+    # Get the path of the uploaded file
+    path = next(iter(uploaded))
+
+    # Define the uploaded_file variable and assign it the value of the path variable
+    uploaded_file = path
+
+    # Check if a file was uploaded
+    if uploaded_file:
+        # Read the uploaded EPUB file
+        book = epub.read_epub(uploaded_file)
+
     if uploaded_file is not None:
         st.write("Uploaded file:", uploaded_file.name)
         chapters = get_chapters(uploaded_file, False, 0, 0)
