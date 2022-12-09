@@ -26,9 +26,7 @@ if file is not None:
         # Process json file
         with open(file) as f:
             data = json.load(f)
-        # Print first 10 entries from the file
-        st.write('Here is a preview of your json file:')
-        st.json(data[:10])
+
 
 # Section 2: Search form
 st.header('Search Form')
