@@ -3,6 +3,7 @@ from sentence_transformers import SentenceTransformer, util
 import json
 import ebooklib
 from ebooklib import epub
+import os
 from bs4 import BeautifulSoup
 from os.path import exists
 from IPython.display import HTML, display
@@ -10,7 +11,6 @@ import numpy as np
 import math
 
 model = SentenceTransformer('sentence-transformers/multi-qa-mpnet-base-dot-v1')
-
 
 # Section 1: Upload epub or json file
 st.header('Upload epub or json file')
